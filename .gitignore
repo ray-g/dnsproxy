@@ -10,6 +10,21 @@
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+pprof/
 
 # Dependency directories (remove the comment below to include it)
-# vendor/
+vendor/
+
+# Temp files
+tmp/
+testdata/
+*.tmp
+*.test
+*.swp
+
+# local config
+sources/
+
+# build
+dnsproxy
+

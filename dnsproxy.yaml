@@ -1,0 +1,70 @@
+---
+LogLevel: "Info"
+DebugMode: false
+
+# Configs for DNS Proxy Server
+DNSServer:
+  # Address to bind for DNS server
+  BindAddr: "0.0.0.0:53"
+
+# NDS Resolver used in server
+Resolver:
+  # nameservers to forward queries to
+  Nameservers: ["8.8.8.8:53", "8.8.4.4:53"]
+
+  # response to blocked queries with a NXDOMAIN
+  NXDomainOnBlock: false
+
+  # concurrency interval for lookups in miliseconds
+  Interval: 200
+
+  # query timeout for dns lookups in seconds
+  Timeout: 5
+
+  # cache entry lifespan in seconds
+  TTL: 600
+
+  # Hosts file for resolve manual defined domains. Supports wildcard
+  Hosts:
+    Enable: true
+    HostsFile: /etc/hosts
+    RefreshInterval: 900
+
+  # Dns over HTTPS provider to use.
+  DoH:
+    Enable: false
+    Endpoint: "https://doh.opendns.com/dns-query"
+
+# Setup API server with WebGUI
+APIServer:
+  BindAddr: "127.0.0.1:3000"
+
+# DNS Blocker
+Blocker:
+  Enable: true
+
+  # list of sources to pull blocklists from, stores them in ./sources
+  SourceURLs:
+    - Name: "malwaredomains"
+      URL: "https://mirror1.malwaredomains.com/files/justdomains"
+    - Name: "StevenBlack"
+      URL: "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
+    - Name: "sysctl.org"
+      URL: "https://sysctl.org/cameleon/hosts"
+    - Name: "disconnect.me.tracking"
+      URL: "https://s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt"
+    - Name: "disconnect.me.ad"
+      URL: "https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt"
+    - Name: "quidsup.notrack-blocklist"
+      URL: "https://gitlab.com/quidsup/notrack-blocklists/raw/master/notrack-blocklist.txt"
+
+  # list of locations to recursively read blocklists from (warning, every file found is assumed to be a hosts-file or domain list)
+  SourceDir: "sources"
+
+  # manual blocklist entries
+  # Blocklist:
+
+  # manual whitelist entries
+  Whitelist:
+    - "getsentry.com"
+    - "www.getsentry.com"

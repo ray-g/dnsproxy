@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>DNS Proxy</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/c3.min.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+</head>
+<body>
+  <div id="app" class="container">
+    <div class="row">
+      <div class="twelve columns" style="margin-top: 1%">
+          <h1>DNS Proxy :
+              <span v-if="active==true" style="color: green">Active</span>
+              <span v-else style="color: red">Not Active</span>
+          </h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="four columns" v-if="!loading">
+        <h5>Started {{timeElapsed}} seconds</h5>
+        <h5>Blocking {{numDomainBlocked.toLocaleString()}} domains</h5>
+        <h5>{{queryTotal}} queries, {{queryBlocked}} blocked</h5>
+        <h5>{{percentageBlocked.toFixed(2)}}% of queries blocked</h5>
+        <button v-if="active==false" v-on:click="setActive(true)" style="color: green">Activate</button>
+        <button v-else="active==true" v-on:click="setActive(false)" style="color: red">Deactivate</button>
+        <div>
+          Auto Refresh <input type="checkbox" v-on:click="toggle_autoupdate"/>
+        </div>
+      </div>
+      <div v-else>
+        <h5>{{loadingText}}</h5>
+      </div>
+      <div class="eight columns">
+        <div id="chart"></div>
+      </div>
+      <div class="twelve columns">
+        <div>
+            <input type="text" maxlength="100" size="70%" v-model="domainQuestion"/>
+            <button v-on:click="queryDomain">Query</button>
+        </div>
+        <div v-if="domainAnswerCache.length>0">
+          Cache: {{domainAnswerCache}}
+        </div>
+        <div v-if="domainAnswerQuery.length>0">
+          ==========
+          <br/>
+          Query: {{domainAnswerQuery}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="js/jquery-3.2.1.min.js"></script>
+  <script src="js/d3.min.js"></script>
+  <script src="js/c3.min.js"></script>
+  <script src="js/vue.min.js"></script>
+  <script src="js/index.js"></script>
+</body>
+</html>
