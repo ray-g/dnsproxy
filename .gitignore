@@ -15,9 +15,6 @@ pprof/
 # Dependency directories (remove the comment below to include it)
 vendor/
 
-# bindata ourput
-api/bindata.go
-
 # Temp files
 tmp/
 testdata/
