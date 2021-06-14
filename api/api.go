@@ -107,7 +107,11 @@ func StartAPIServer(addr string, debugMode bool, cache c.Cache) error {
 	})
 
 	// Serve Web GUI
-	router.Use(static.Serve("/", static.LocalFile("./web", false)))
+	if debugMode {
+		router.Use(static.Serve("/", static.LocalFile("./web", false)))
+	} else {
+		router.Use(static.Serve("/", BinaryFileSystem("")))
+	}
 
 	listener, err := net.Listen("tcp", addr)
 	if err != nil {

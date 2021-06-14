@@ -3,5 +3,9 @@ vendor:
 	go mod tidy
 
 .PHONY: build
-build:
+build: bindata
 	go build -v .
+
+.PHONY: bindata
+bindata:
+	go-bindata --nocompress -pkg api -o api/bindata.go -prefix web ./web/...
