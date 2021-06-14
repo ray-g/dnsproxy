@@ -53,7 +53,7 @@ var app = new Vue({
         self.queryTotal = data.stats.query_count
         self.queryBlocked = data.stats.query_blocked
         if (self.queryTotal > 0) {
-          self.percentageBlocked = self.queryBlocked/self.queryTotal
+          self.percentageBlocked = self.queryBlocked/self.queryTotal*100
         }
         var now = new Date()
         self.timeElapsed = ( now - self.timeStarted ) / 1000
