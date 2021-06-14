@@ -38,9 +38,9 @@ func update(config *conf.BlockerConfig, cache c.Cache, force bool) error {
 	return nil
 }
 
-func downloadFile(uri string, name string) error {
-	utils.EnsureDirectory("sources")
-	filePath := filepath.FromSlash(fmt.Sprintf("sources/%s", name))
+func downloadFile(uri string, name string, sourcedir string) error {
+	utils.EnsureDirectory(sourcedir)
+	filePath := filepath.FromSlash(filepath.Join(sourcedir, name))
 
 	output, err := os.Create(filePath)
 	if err != nil {
@@ -76,7 +76,7 @@ func fetchSources(sources []conf.DNSBlockSource, sourceDir string, force bool) e
 		wg.Add(1)
 		go func(uri string, name string) {
 			logger.Debugf("fetching source %s", uri)
-			if err := downloadFile(uri, name); err != nil {
+			if err := downloadFile(uri, name, sourceDir); err != nil {
 				logger.Error("failed to download source, err: %v", err)
 			}
 
