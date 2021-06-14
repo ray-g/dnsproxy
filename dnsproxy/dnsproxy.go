@@ -14,7 +14,7 @@ import (
 	"github.com/ray-g/dnsproxy/stats"
 )
 
-func ServeWithConfig(filepath string) {
+func Serve(filepath string) {
 	config, err := conf.LoadConfig(filepath)
 	if err != nil {
 		logger.Fatal(err)

@@ -7,5 +7,5 @@ import (
 )
 
 func main() {
-	dnsproxy.ServeWithConfig(os.Args[1])
+	dnsproxy.Serve(os.Args[1])
 }
