@@ -1,6 +1,7 @@
 package record
 
 import (
+	"net"
 	"time"
 
 	"github.com/miekg/dns"
@@ -46,6 +47,26 @@ func NewCustomRecord(msg *dns.Msg, ttl time.Duration) *Record {
 	return NewRecord(msg, false, false, ttl)
 }
 
-func NewBlockedRecord(msg *dns.Msg) *Record {
-	return NewRecord(msg, true, true, 0)
+func NewBlockedRecord() *Record {
+	return NewRecord(bMesg, true, true, 0)
+}
+
+func blockedMesg() *dns.Msg {
+	m := new(dns.Msg)
+	rrAHeader := dns.RR_Header{
+		Name:   "domain.blocked",
+		Rrtype: dns.TypeA,
+		Class:  dns.ClassINET,
+		Ttl:    600,
+	}
+	a := &dns.A{Hdr: rrAHeader, A: net.ParseIP("0.0.0.0")}
+	m.Answer = append(m.Answer, a)
+
+	return m
+}
+
+var bMesg *dns.Msg
+
+func init() {
+	bMesg = blockedMesg()
 }

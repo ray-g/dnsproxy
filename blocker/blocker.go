@@ -27,7 +27,7 @@ func update(config *conf.BlockerConfig, cache c.Cache, force bool) error {
 	}
 
 	for _, entry := range config.Blocklist {
-		cache.Set(entry, r.NewBlockedRecord(nil))
+		cache.Set(entry, r.NewBlockedRecord())
 		stats.AddBlockedDomain()
 	}
 
@@ -136,7 +136,7 @@ func parseHostFile(fileName string, cache c.Cache) error {
 			}
 
 			if !cache.Exists(line) && !whitelist[line] {
-				cache.Set(line, r.NewBlockedRecord(nil))
+				cache.Set(line, r.NewBlockedRecord())
 				stats.AddBlockedDomain()
 			}
 		}
