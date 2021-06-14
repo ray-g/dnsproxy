@@ -4,7 +4,7 @@ vendor:
 
 .PHONY: build
 build: bindata
-	go build -v .
+	go build -v -o build/dnsproxy .
 
 .PHONY: bindata
 bindata:

@@ -29,6 +29,5 @@ testdata/
 sources/
 
 # build
-dnsproxy
 build/
 

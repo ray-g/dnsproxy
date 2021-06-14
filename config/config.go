@@ -56,12 +56,11 @@ type Config struct {
 	Hosts     HostsFileConfig
 }
 
-func LoadConfig() (*Config, error) {
+func LoadConfig(filepath string) (*Config, error) {
 
 	var config Config
 
-	configreader.SetConfigName("dnsproxy")
-	configreader.LoadConfig(&config)
+	err := configreader.ReadFromFile(filepath, &config)
 
-	return &config, nil
+	return &config, err
 }
