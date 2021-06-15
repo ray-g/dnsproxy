@@ -31,7 +31,8 @@
         <button v-if="active==false" v-on:click="setActive(true)" style="color: green">Activate</button>
         <button v-else="active==true" v-on:click="setActive(false)" style="color: red">Deactivate</button>
         <div>
-          Auto Refresh <input type="checkbox" v-on:click="toggle_autoupdate"/>
+          <input type="checkbox" v-on:click="toggle_autoupdate"/> Auto Refresh
+          <input type="number" maxlength="8" size="8" max="600" min="1" v-model="autoUpdateInterval"> Second(s)
         </div>
       </div>
       <div v-else>

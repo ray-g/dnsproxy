@@ -3,7 +3,6 @@ var apiURL = window.location.origin + "/"
 var app = new Vue({
   el: '#app',
   data: {
-    queries: [],
     qps: [],
     totalCached: 0,
     numDomainTotal: 0,
@@ -19,6 +18,7 @@ var app = new Vue({
     active: false,
     autoUpdate: false,
     autoUpdateId: 0,
+    autoUpdateInterval: 10,
     domainQuestion: "",
     domainAnswerCache: "",
     domainAnswerQuery: "",
@@ -74,12 +74,14 @@ var app = new Vue({
       var cols = []
       var xPlot = ['x']
       var yPlot = ['qps']
-      var labels = {}
 
       var timeStart = self.lastUpdated - self.qps.length
       var times = new Array(self.qps.length)
 
       for (i=0; i<self.qps.length; i++) {
+        if (self.qps[i] <= 0) {
+          continue
+        }
         timestamp = timeStart + i
         times[i] = timestamp
         xPlot.push(timestamp)
@@ -145,15 +147,19 @@ var app = new Vue({
     },
     pollActive: function () {
       var self = this
-      setInterval(self.getActive, 10000)
+      setInterval(self.getActive, 1000)
     },
     toggle_autoupdate: function () {
       var self = this
+      if (self.autoUpdateInterval <= 0) {
+        self.autoUpdateInterval = 10
+      }
+      var interval = self.autoUpdateInterval * 1000
       self.autoUpdate = !self.autoUpdate
       if (self.autoUpdate == true) {
         self.autoUpdateId = setInterval(function () {
           self.fetchStats()
-        }.bind(self), 10000);
+        }.bind(self), interval);
       } else {
         if (self.autoUpdateId != 0) {
           clearInterval(self.autoUpdateId)

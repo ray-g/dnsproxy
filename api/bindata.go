@@ -1038,7 +1038,8 @@ var _indexHtml = []byte(`<!DOCTYPE html>
         <button v-if="active==false" v-on:click="setActive(true)" style="color: green">Activate</button>
         <button v-else="active==true" v-on:click="setActive(false)" style="color: red">Deactivate</button>
         <div>
-          Auto Refresh <input type="checkbox" v-on:click="toggle_autoupdate"/>
+          <input type="checkbox" v-on:click="toggle_autoupdate"/> Auto Refresh
+          <input type="number" maxlength="8" size="8" max="600" min="1" v-model="autoUpdateInterval"> Second(s)
         </div>
       </div>
       <div v-else>
@@ -1082,8 +1083,8 @@ func indexHtml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "index.html", size: 2337, mode: os.FileMode(436), modTime: time.Unix(1623614176, 0)}
-	a := &asset{bytes: bytes, info: info, digest: [32]uint8{0x29, 0x5a, 0xd0, 0x4e, 0x93, 0x9e, 0xb3, 0x2a, 0x33, 0x62, 0x23, 0x48, 0xe7, 0x87, 0xe7, 0xd0, 0xbf, 0xa2, 0x58, 0x74, 0xfa, 0xdb, 0xc4, 0xfe, 0xa6, 0xa1, 0xe6, 0xdf, 0xbc, 0x30, 0x92, 0x90}}
+	info := bindataFileInfo{name: "index.html", size: 2449, mode: os.FileMode(436), modTime: time.Unix(1623759396, 0)}
+	a := &asset{bytes: bytes, info: info, digest: [32]uint8{0x43, 0x3f, 0x2d, 0x18, 0xa3, 0xb3, 0x9c, 0x7e, 0x4, 0xd5, 0x6b, 0xb7, 0xcc, 0xf5, 0x3a, 0x1a, 0xe9, 0x17, 0x3f, 0xe1, 0x33, 0x5b, 0xbe, 0x5c, 0x3f, 0xad, 0x2f, 0x69, 0xc5, 0x38, 0x2, 0xb4}}
 	return a, nil
 }
 
@@ -1130,7 +1131,6 @@ var _jsIndexJs = []byte(`var apiURL = window.location.origin + "/"
 var app = new Vue({
   el: '#app',
   data: {
-    queries: [],
     qps: [],
     totalCached: 0,
     numDomainTotal: 0,
@@ -1146,6 +1146,7 @@ var app = new Vue({
     active: false,
     autoUpdate: false,
     autoUpdateId: 0,
+    autoUpdateInterval: 10,
     domainQuestion: "",
     domainAnswerCache: "",
     domainAnswerQuery: "",
@@ -1201,12 +1202,14 @@ var app = new Vue({
       var cols = []
       var xPlot = ['x']
       var yPlot = ['qps']
-      var labels = {}
 
       var timeStart = self.lastUpdated - self.qps.length
       var times = new Array(self.qps.length)
 
       for (i=0; i<self.qps.length; i++) {
+        if (self.qps[i] <= 0) {
+          continue
+        }
         timestamp = timeStart + i
         times[i] = timestamp
         xPlot.push(timestamp)
@@ -1272,15 +1275,19 @@ var app = new Vue({
     },
     pollActive: function () {
       var self = this
-      setInterval(self.getActive, 10000)
+      setInterval(self.getActive, 1000)
     },
     toggle_autoupdate: function () {
       var self = this
+      if (self.autoUpdateInterval <= 0) {
+        self.autoUpdateInterval = 10
+      }
+      var interval = self.autoUpdateInterval * 1000
       self.autoUpdate = !self.autoUpdate
       if (self.autoUpdate == true) {
         self.autoUpdateId = setInterval(function () {
           self.fetchStats()
-        }.bind(self), 10000);
+        }.bind(self), interval);
       } else {
         if (self.autoUpdateId != 0) {
           clearInterval(self.autoUpdateId)
@@ -1301,8 +1308,8 @@ func jsIndexJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "js/index.js", size: 4153, mode: os.FileMode(436), modTime: time.Unix(1623692602, 0)}
-	a := &asset{bytes: bytes, info: info, digest: [32]uint8{0x7b, 0x3a, 0xc9, 0x76, 0xcf, 0xef, 0xf9, 0x2e, 0xe2, 0xba, 0x57, 0x5d, 0x77, 0xa9, 0x6f, 0xdd, 0xa4, 0x6, 0x80, 0xe6, 0x56, 0x11, 0x89, 0xd2, 0xf9, 0xf, 0xef, 0x82, 0x13, 0x90, 0x24, 0x9d}}
+	info := bindataFileInfo{name: "js/index.js", size: 4344, mode: os.FileMode(436), modTime: time.Unix(1623759115, 0)}
+	a := &asset{bytes: bytes, info: info, digest: [32]uint8{0xd, 0xf7, 0x90, 0xc4, 0x95, 0xc5, 0xbf, 0xd4, 0x51, 0xc5, 0x52, 0x68, 0xec, 0xd0, 0xd1, 0x9f, 0x8c, 0x7c, 0xb3, 0x95, 0xb1, 0xb4, 0xf8, 0x77, 0x64, 0x88, 0xfb, 0xc9, 0x10, 0x6e, 0x49, 0x4d}}
 	return a, nil
 }
 

@@ -10,7 +10,9 @@ DNSServer:
 # NDS Resolver used in server
 Resolver:
   # nameservers to forward queries to
-  Nameservers: ["8.8.8.8:53", "8.8.4.4:53"]
+  Nameservers:
+    - "8.8.8.8:53"
+    - "8.8.4.4:53"
 
   # response to blocked queries with a NXDOMAIN
   NXDomainOnBlock: false
