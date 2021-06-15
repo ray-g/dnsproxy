@@ -29,9 +29,11 @@ func Serve(filepath string) {
 
 	blocker.PerformUpdate(&config.Blocker, cache, false)
 
+	if config.APIServer.Enable {
 	err = api.StartAPIServer(config.APIServer.BindAddr, config.DebugMode, cache)
 	if err != nil {
 		logger.Fatalf("Cannot start the API server %s", err)
+	}
 	}
 
 	stats.Activate()

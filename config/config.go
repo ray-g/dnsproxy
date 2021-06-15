@@ -24,6 +24,7 @@ type DoHConfig struct {
 }
 
 type APIServerConfig struct {
+	Enable   bool   `default:"true"`
 	BindAddr string `default:"127.0.0.1:8080"`
 }
 
