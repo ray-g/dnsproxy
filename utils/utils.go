@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"os/signal"
 	"regexp"
+	"syscall"
 
 	"github.com/miekg/dns"
+	"github.com/ray-g/dnsproxy/logger"
 )
 
 const (
@@ -63,4 +66,12 @@ func EnsureDirectory(path string) error {
 	}
 
 	return nil
+}
+
+func WaitSysSignal() {
+	// Waiting for close
+	osSignals := make(chan os.Signal, 1)
+	signal.Notify(osSignals, os.Interrupt, os.Kill, syscall.SIGTERM, syscall.SIGHUP)
+	sig := <-osSignals
+	logger.Debugf("Received signal: %v", sig)
 }
