@@ -37,13 +37,19 @@ func StartAPIServer(addr string, debugMode bool, cache c.Cache) error {
 		c.JSON(http.StatusOK, gin.H{"cache": cache.Dump()})
 	})
 
-	router.GET("/cache/get/:key", func(c *gin.Context) {
+	router.GET("/cache/:key", func(c *gin.Context) {
 		r, err := cache.Get(c.Param("key"))
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{"error": c.Param("key") + " not found"})
 		} else {
 			c.JSON(http.StatusOK, gin.H{"answer": r.Msg.Answer})
 		}
+	})
+
+	router.DELETE("/cache/:key", func(c *gin.Context) {
+		key := c.Param("key")
+		cache.Remove(key)
+		c.JSON(http.StatusOK, gin.H{"key": key})
 	})
 
 	router.GET("/cache/length", func(c *gin.Context) {

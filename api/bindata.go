@@ -1052,6 +1052,7 @@ var _indexHtml = []byte(`<!DOCTYPE html>
         <div>
             <input type="text" maxlength="100" size="70%" v-model="domainQuestion"/>
             <button v-on:click="queryDomain">Query</button>
+            <button v-on:click="deleteFromCache" style="color: red">Delete</button>
         </div>
         <div v-if="domainAnswerCache.length>0">
           Cache: {{domainAnswerCache}}
@@ -1083,8 +1084,8 @@ func indexHtml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "index.html", size: 2449, mode: os.FileMode(436), modTime: time.Unix(1623759396, 0)}
-	a := &asset{bytes: bytes, info: info, digest: [32]uint8{0x43, 0x3f, 0x2d, 0x18, 0xa3, 0xb3, 0x9c, 0x7e, 0x4, 0xd5, 0x6b, 0xb7, 0xcc, 0xf5, 0x3a, 0x1a, 0xe9, 0x17, 0x3f, 0xe1, 0x33, 0x5b, 0xbe, 0x5c, 0x3f, 0xad, 0x2f, 0x69, 0xc5, 0x38, 0x2, 0xb4}}
+	info := bindataFileInfo{name: "index.html", size: 2533, mode: os.FileMode(436), modTime: time.Unix(1623822017, 0)}
+	a := &asset{bytes: bytes, info: info, digest: [32]uint8{0x21, 0xeb, 0x28, 0xfb, 0xb7, 0xed, 0xa8, 0x8c, 0xea, 0x97, 0x4a, 0xfc, 0x16, 0x5c, 0xff, 0xe, 0xd8, 0xa7, 0x15, 0x0, 0x93, 0x62, 0x78, 0x2b, 0x48, 0x1, 0x16, 0xaf, 0x92, 0x41, 0xd5, 0x33}}
 	return a, nil
 }
 
@@ -1154,7 +1155,7 @@ var app = new Vue({
   created: function () {
     this.fetchStats()
     this.getActive()
-    this.pollActive()
+    // this.pollActive()
   },
   methods: {
     queryDomain: function() {
@@ -1168,6 +1169,14 @@ var app = new Vue({
         } else {
           self.domainAnswerQuery = "didn't get a valid answer"
         }
+      })
+    },
+    deleteFromCache: function() {
+      var self = this
+      $.ajax({
+        url: apiURL + 'cache/' + self.domainQuestion,
+        type: 'DELETE',
+        success: function () {}
       })
     },
     fetchStats: function () {
@@ -1275,7 +1284,8 @@ var app = new Vue({
     },
     pollActive: function () {
       var self = this
-      setInterval(self.getActive, 1000)
+      var interval = self.autoUpdateInterval * 1000
+      setInterval(self.getActive, interval)
     },
     toggle_autoupdate: function () {
       var self = this
@@ -1287,6 +1297,7 @@ var app = new Vue({
       if (self.autoUpdate == true) {
         self.autoUpdateId = setInterval(function () {
           self.fetchStats()
+          self.getActive()
         }.bind(self), interval);
       } else {
         if (self.autoUpdateId != 0) {
@@ -1308,8 +1319,8 @@ func jsIndexJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "js/index.js", size: 4344, mode: os.FileMode(436), modTime: time.Unix(1623759115, 0)}
-	a := &asset{bytes: bytes, info: info, digest: [32]uint8{0xd, 0xf7, 0x90, 0xc4, 0x95, 0xc5, 0xbf, 0xd4, 0x51, 0xc5, 0x52, 0x68, 0xec, 0xd0, 0xd1, 0x9f, 0x8c, 0x7c, 0xb3, 0x95, 0xb1, 0xb4, 0xf8, 0x77, 0x64, 0x88, 0xfb, 0xc9, 0x10, 0x6e, 0x49, 0x4d}}
+	info := bindataFileInfo{name: "js/index.js", size: 4627, mode: os.FileMode(436), modTime: time.Unix(1623822471, 0)}
+	a := &asset{bytes: bytes, info: info, digest: [32]uint8{0x7e, 0xab, 0x45, 0x70, 0x4b, 0xbe, 0x50, 0x88, 0x39, 0x9c, 0xb5, 0xec, 0xeb, 0x2c, 0x9d, 0xa7, 0x1c, 0xdd, 0xb8, 0x7e, 0xb7, 0x93, 0x7b, 0x92, 0x65, 0xc4, 0x48, 0xe5, 0xec, 0x28, 0xfc, 0x60}}
 	return a, nil
 }
 

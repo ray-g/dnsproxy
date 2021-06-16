@@ -45,6 +45,7 @@
         <div>
             <input type="text" maxlength="100" size="70%" v-model="domainQuestion"/>
             <button v-on:click="queryDomain">Query</button>
+            <button v-on:click="deleteFromCache" style="color: red">Delete</button>
         </div>
         <div v-if="domainAnswerCache.length>0">
           Cache: {{domainAnswerCache}}

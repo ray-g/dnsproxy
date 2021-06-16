@@ -26,7 +26,7 @@ var app = new Vue({
   created: function () {
     this.fetchStats()
     this.getActive()
-    this.pollActive()
+    // this.pollActive()
   },
   methods: {
     queryDomain: function() {
@@ -40,6 +40,14 @@ var app = new Vue({
         } else {
           self.domainAnswerQuery = "didn't get a valid answer"
         }
+      })
+    },
+    deleteFromCache: function() {
+      var self = this
+      $.ajax({
+        url: apiURL + 'cache/' + self.domainQuestion,
+        type: 'DELETE',
+        success: function () {}
       })
     },
     fetchStats: function () {
@@ -147,7 +155,8 @@ var app = new Vue({
     },
     pollActive: function () {
       var self = this
-      setInterval(self.getActive, 1000)
+      var interval = self.autoUpdateInterval * 1000
+      setInterval(self.getActive, interval)
     },
     toggle_autoupdate: function () {
       var self = this
@@ -159,6 +168,7 @@ var app = new Vue({
       if (self.autoUpdate == true) {
         self.autoUpdateId = setInterval(function () {
           self.fetchStats()
+          self.getActive()
         }.bind(self), interval);
       } else {
         if (self.autoUpdateId != 0) {
