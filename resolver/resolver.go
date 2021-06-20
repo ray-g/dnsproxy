@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/miekg/dns"
+	"golang.org/x/net/context"
 
 	"github.com/ray-g/dnsproxy/logger"
 	"github.com/ray-g/dnsproxy/utils"
@@ -51,11 +52,14 @@ func (r *Resolver) Lookup(net string, req *dns.Msg, timeout int, interval int, n
 		logger.Debugf("DoH Failed due to '%s' falling back to nameservers", err)
 	}
 
+	timeo := r.Timeout(timeout)
 	c := &dns.Client{
 		Net:          net,
-		ReadTimeout:  r.Timeout(timeout),
-		WriteTimeout: r.Timeout(timeout),
+		ReadTimeout:  timeo,
+		WriteTimeout: timeo,
 	}
+	ctx, cancel := context.WithTimeout(context.Background(), timeo)
+	defer cancel()
 
 	qname := req.Question[0].Name
 
@@ -63,7 +67,7 @@ func (r *Resolver) Lookup(net string, req *dns.Msg, timeout int, interval int, n
 	var wg sync.WaitGroup
 	L := func(nameserver string) {
 		defer wg.Done()
-		r, _, err := c.Exchange(req, nameserver)
+		r, _, err := c.ExchangeContext(ctx, req, nameserver)
 		if err != nil {
 			logger.Errorf("%s socket error on %s", qname, nameserver)
 			logger.Errorf("error:%s", err.Error())
@@ -93,7 +97,7 @@ func (r *Resolver) Lookup(net string, req *dns.Msg, timeout int, interval int, n
 		// but exit early, if we have an answer
 		select {
 		case r := <-res:
-			return r, nil
+			return r.Copy(), nil
 		case <-ticker.C:
 			continue
 		}
@@ -103,7 +107,7 @@ func (r *Resolver) Lookup(net string, req *dns.Msg, timeout int, interval int, n
 	wg.Wait()
 	select {
 	case r := <-res:
-		return r, nil
+		return r.Copy(), nil
 	default:
 		return nil, ResolvError{qname, net, nameServers}
 	}
